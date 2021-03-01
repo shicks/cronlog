@@ -37,7 +37,13 @@ func getName() string {
 // args should be executed, but an extra wrapper on either side
 // will be printed.
 func runIndirect() error {
-	cmd := exec.Command(os.Args[1], os.Args[2:]...)
+	args := []string{
+		"-c",
+		"if [ -e \"$HOME/.cronlog.env\" ]; then source \"$HOME/.cronlog.env\"; fi; \"$@\"",
+		"exec",
+	}
+	args = append(args, os.Args[1:]...)
+	cmd := exec.Command("/bin/sh", args...)
 	fmt.Fprintf(os.Stderr, "starting %s\n", strings.Join(os.Args[1:], " "))
 	var wg sync.WaitGroup
 	stdout, err := cmd.StdoutPipe()
@@ -98,7 +104,7 @@ var trailingWhitespaceRe = regexp.MustCompile(`(\s+)$`)
 func runSystemd() error {
 	if os.Getenv("XDG_RUNTIME_DIR") == "" {
 		// This is what it is on my machine, presumably it's relatively
-		// standard.  If not, be sure to set it directly in the crontab.
+		// standard.  If not, be sure to set it directly in the crontab or in ~/.cronlog.env
 		os.Setenv("XDG_RUNTIME_DIR", fmt.Sprintf("/run/user/%d", os.Getuid()))
 	}
 
