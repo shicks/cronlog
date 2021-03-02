@@ -52,6 +52,7 @@ var tpl = template.Must(template.New("").Parse(`
 <style>
 .job { font-family: monospace; margin-bottom: 1ex; }
 .line, .logentry { white-space: pre; }
+.line { font-weight: bold; }
 .log { margin-left: 2em; }
 .c1  { font-weight: bold; }
 .c30 { color: black; }
