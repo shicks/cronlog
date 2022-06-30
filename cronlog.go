@@ -14,12 +14,15 @@ import (
 	"sync"
 )
 
+const VERSION = "1.0"
+
 var (
 	sleepFlag     = flag.Duration("s", 0, "Sleeps for a random period of time up to DURATION.")
 	repeatsFlag   = flag.Int("r", 0, "Allows the command to be repeated manually COUNT times between each automatic run.  Manual repeats are requested via the web UI.")
 	rateLimitFlag = flag.Duration("d", 0, "Rate limit between manual re-runs.")
 	nameFlag      = flag.String("n", "", "Specifies the name to use for the job in systemd logs.")
 	daemonFlag    = flag.Bool("daemon", false, "Indicates that the web server should be started.")
+	versionFlag   = flag.Bool("version", false, "Print version information and quit.")
 )
 
 // Internal usage: invoking with CRONLOG_PARSE=1 indicates
@@ -138,6 +141,11 @@ func main() {
 	}
 
 	flag.Parse()
+	if *versionFlag {
+		fmt.Printf("cronlog %s\n", VERSION)
+		return
+	}
+
 	if os.Getenv("CRONLOG_PARSE") == "1" {
 		fmt.Printf("%s\n", getName())
 		return
